@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.work.*
 import io.jyryuitpro.workmanagerdemo1.databinding.ActivityMainBinding
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         // setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         binding.button.setOnClickListener {
-            setOneTimeWorkRequest()
+            // setOneTimeWorkRequest()
+            setPeriodicWorkRequest()
         }
         setContentView(binding.root)
     }
@@ -70,5 +72,13 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
                 }
             })
+    }
+
+    private fun setPeriodicWorkRequest() {
+        val periodicWorkRequest = PeriodicWorkRequest
+            .Builder(DownloadingWorker::class.java, 16, TimeUnit.MINUTES)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueue(periodicWorkRequest)
     }
 }
